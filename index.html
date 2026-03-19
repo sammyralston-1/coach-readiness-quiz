@@ -913,9 +913,6 @@
 
             <div class="results-cta" id="resultsCta"></div>
 
-            <div style="margin-top: 40px; text-align: center;">
-                <button class="btn-retake" onclick="retakeQuiz()">↻ Retake Quiz</button>
-            </div>
 
             <div class="share-section">
                 <button class="btn-share" onclick="copyResults()">📋 Copy Results</button>
@@ -1392,7 +1389,7 @@ function renderGatingWarnings(issues) {
                     </li>
                 `).join('')}
             </ul>
-            <div class="bottom-note">These are non-negotiables for building a credible and sustainable online coaching business. Address these first, then retake the quiz.</div>
+            <div class="bottom-note">These are non-negotiables for building a credible and sustainable online coaching business. These are non-negotiables for building a credible and sustainable online coaching business.</div>
         </div>
     `;
 }
@@ -1483,7 +1480,7 @@ function renderCTA(scores, gatingIssues) {
         cta.innerHTML = `
             <h3>Not ready yet? That's completely fine.</h3>
             <p>Focus on the areas above, build your coaching foundation, and come back when you've ticked those boxes. We'll be here when you're ready.</p>
-            <button class="btn-cta" onclick="retakeQuiz()">↻ Retake When You're Ready</button>
+            <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Book a Call to Discuss Your Next Steps →</a>
         `;
     } else {
         cta.innerHTML = `
