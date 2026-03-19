@@ -826,18 +826,18 @@
 
         <!-- LANDING -->
         <div class="landing" id="landing">
-            <div class="landing-icon">🖥️🎾</div>
-            <h1>Are You Ready to Take Your Coaching Online?</h1>
-            <p>Take this 2-minute quiz to find out if you're ready to start earning online as a tennis coach — and get a personalised action plan to make it happen.</p>
+            <div class="landing-icon">🎾</div>
+            <h1>Could You Take Your Tennis Coaching Online?</h1>
+            <p>Answer 10 quick questions and find out where you stand - plus get a personalised action plan for your next steps.</p>
             <div class="landing-features">
                 <div class="landing-feature"><span>📋</span> 10 Questions</div>
-                <div class="landing-feature"><span>⏱️</span> 2 Minutes</div>
-                <div class="landing-feature"><span>🎯</span> Personalised Plan</div>
+                <div class="landing-feature"><span>⏱️</span> Takes 2 mins</div>
+                <div class="landing-feature"><span>🎯</span> Free action plan</div>
             </div>
             <button class="btn-start" onclick="startQuiz()">
-                Take The Quiz →
+                Start the Quiz →
             </button>
-            <div class="landing-note">For tennis coaches ready to grow their business</div>
+            <div class="landing-note">Built for tennis coaches who want to grow online</div>
         </div>
 
         <!-- QUIZ -->
@@ -864,7 +864,7 @@
         <div class="lead-screen" id="leadScreen">
             <div class="lead-card">
                 <div class="lead-icon">🎯</div>
-                <h2>Almost There — Your Results Are Ready!</h2>
+                <h2>Almost There  - Your Results Are Ready!</h2>
                 <p>Enter your details below to unlock your personalised readiness score and action plan.</p>
             </div>
 
@@ -892,7 +892,7 @@
                     <div class="form-error" id="phoneError">Please enter your phone number</div>
                 </div>
                 <button type="submit" class="btn-results">See My Results →</button>
-                <div class="lead-privacy">🔒 Your info is safe — we'll never spam you.</div>
+                <div class="lead-privacy">🔒 Your info is safe  - we'll never spam you.</div>
             </form>
         </div>
 
@@ -1013,8 +1013,8 @@ const questions = [
         options: [
             { text: "I haven't started coaching yet", score: 1, gate: "experience" },
             { text: "Less than a year", score: 2, gate: "experience" },
-            { text: "1–3 years", score: 3 },
-            { text: "4+ years — coaching is my career", score: 4 }
+            { text: "1-3 years", score: 3 },
+            { text: "4+ years  - coaching is my career", score: 4 }
         ],
         dimension: "experience"
     },
@@ -1024,8 +1024,8 @@ const questions = [
         options: [
             { text: "No, I'm not qualified", score: 1, gate: "qualification" },
             { text: "I'm currently working towards one", score: 2, gate: "qualification" },
-            { text: "Yes — Level 1 or equivalent", score: 3 },
-            { text: "Yes — Level 2+ or equivalent (LTA, PTR, USPTA, RPT, etc.)", score: 4 }
+            { text: "Yes  - Level 1 or equivalent", score: 3 },
+            { text: "Yes  - Level 2+ or equivalent (LTA, PTR, USPTA, RPT, etc.)", score: 4 }
         ],
         dimension: "experience"
     },
@@ -1034,9 +1034,9 @@ const questions = [
         question: "Is tennis coaching your full-time job?",
         options: [
             { text: "No, it's just a hobby or side thing", score: 1, gate: "fulltime" },
-            { text: "Part-time — I coach a few hours a week", score: 2, gate: "fulltime" },
+            { text: "Part-time  - I coach a few hours a week", score: 2, gate: "fulltime" },
             { text: "It's my main income but I have another small side gig", score: 3 },
-            { text: "100% full-time — this is what I do", score: 4 }
+            { text: "100% full-time  - this is what I do", score: 4 }
         ],
         dimension: "business"
     },
@@ -1056,9 +1056,9 @@ const questions = [
         question: "How many regular clients or students do you currently coach?",
         options: [
             { text: "None yet or just a few friends/family", score: 1 },
-            { text: "5–10 regular clients", score: 2 },
-            { text: "10–25 regular clients", score: 3 },
-            { text: "25+ clients — I have a full book", score: 4 }
+            { text: "5-10 regular clients", score: 2 },
+            { text: "10-25 regular clients", score: 3 },
+            { text: "25+ clients  - I have a full book", score: 4 }
         ],
         dimension: "business"
     },
@@ -1066,10 +1066,10 @@ const questions = [
         category: "Content & Teaching",
         question: "How confident are you explaining technique and tactics through video or writing?",
         options: [
-            { text: "I've never tried — I only coach in person", score: 1 },
+            { text: "I've never tried  - I only coach in person", score: 1 },
             { text: "I've done it a few times but it feels awkward", score: 2 },
             { text: "I'm fairly comfortable and have created some content", score: 3 },
-            { text: "I'm great at it — I regularly create coaching content", score: 4 }
+            { text: "I'm great at it  - I regularly create coaching content", score: 4 }
         ],
         dimension: "content"
     },
@@ -1077,10 +1077,10 @@ const questions = [
         category: "Tech Readiness",
         question: "How comfortable are you with technology and online tools?",
         options: [
-            { text: "I struggle with the basics — email, apps, etc.", score: 1 },
+            { text: "I struggle with the basics  - email, apps, etc.", score: 1 },
             { text: "I can manage social media and basic tools", score: 2 },
             { text: "I'm comfortable with video editing, platforms, and online tools", score: 3 },
-            { text: "I'm very tech-savvy — I already use tools like Canva, Kajabi, Zoom, etc.", score: 4 }
+            { text: "I'm very tech-savvy  - I already use tools like Canva, Kajabi, Zoom, etc.", score: 4 }
         ],
         dimension: "digital"
     },
@@ -1088,10 +1088,10 @@ const questions = [
         category: "Online Presence",
         question: "Do you currently have an online presence for your coaching?",
         options: [
-            { text: "Nothing — I don't have any social media or website for coaching", score: 1 },
+            { text: "Nothing  - I don't have any social media or website for coaching", score: 1 },
             { text: "I have a personal social media account where I sometimes post about tennis", score: 2 },
             { text: "I have a dedicated coaching profile/page with a small following", score: 3 },
-            { text: "I have an established brand — website, social media, and engaged followers", score: 4 }
+            { text: "I have an established brand  - website, social media, and engaged followers", score: 4 }
         ],
         dimension: "digital"
     },
@@ -1099,7 +1099,7 @@ const questions = [
         category: "Business Mindset",
         question: "How do you feel about selling your coaching services online?",
         options: [
-            { text: "It feels uncomfortable — I don't want to 'sell' myself", score: 1 },
+            { text: "It feels uncomfortable  - I don't want to 'sell' myself", score: 1 },
             { text: "I'm open to it but I wouldn't know where to start", score: 2 },
             { text: "I've started thinking about pricing and offers", score: 3 },
             { text: "I already know my value and I'm confident charging for my expertise", score: 4 }
@@ -1110,10 +1110,10 @@ const questions = [
         category: "Time & Motivation",
         question: "How much time could you dedicate each week to building an online coaching business?",
         options: [
-            { text: "None really — my schedule is completely full", score: 1 },
-            { text: "Maybe 1–2 hours if I squeezed it in", score: 2 },
-            { text: "3–5 hours — I'm ready to commit", score: 3 },
-            { text: "5+ hours — I'm all in and ready to make this happen", score: 4 }
+            { text: "None really  - my schedule is completely full", score: 1 },
+            { text: "Maybe 1-2 hours if I squeezed it in", score: 2 },
+            { text: "3-5 hours  - I'm ready to commit", score: 3 },
+            { text: "5+ hours  - I'm all in and ready to make this happen", score: 4 }
         ],
         dimension: "content"
     }
@@ -1277,7 +1277,7 @@ function checkGatingCriteria() {
     if (ftAnswer !== null && ftAnswer < 2) {
         issues.push({
             icon: '⚡',
-            text: 'You need to be coaching as your main focus — at least as your primary income. Build coaching into a serious career before expanding online.'
+            text: 'You need to be coaching as your main focus  - at least as your primary income. Build coaching into a serious career before expanding online.'
         });
     }
 
@@ -1285,7 +1285,7 @@ function checkGatingCriteria() {
     if (timeAnswer !== null && timeAnswer < 1) {
         issues.push({
             icon: '⏰',
-            text: 'You need to have at least 1–2 hours per week to dedicate to building your online coaching business. Without any time to commit, it won\'t get off the ground.'
+            text: 'You need to have at least 1-2 hours per week to dedicate to building your online coaching business. Without any time to commit, it won\'t get off the ground.'
         });
     }
 
@@ -1348,7 +1348,7 @@ function renderResultBadge(scores, gatingIssues) {
 
     if (gatingIssues.length > 0) {
         emoji = '🚧'; level = 'Not Quite Yet'; title = 'You\'ve Got Some Groundwork to Do';
-        color = '#FF8A65'; subtitle = 'You\'re not ready to go online yet — but that\'s okay. Here\'s exactly what to focus on first.';
+        color = '#FF8A65'; subtitle = 'You\'re not ready to go online yet  - but that\'s okay. Here\'s exactly what to focus on first.';
     } else {
         if (scores.overall >= 75) {
             emoji = '🚀'; level = 'Ready to Launch'; title = 'You\'re Absolutely Ready to Go Online!';
@@ -1382,7 +1382,7 @@ function renderGatingWarnings(issues) {
 
     area.innerHTML = `
         <div class="gating-warning">
-            <h4>⚠️ Important — Before You Go Online</h4>
+            <h4>⚠️ Important  - Before You Go Online</h4>
             <ul>
                 ${issues.map(i => `
                     <li>
@@ -1440,15 +1440,15 @@ function renderRecommendations(scores, gatingIssues) {
             },
             business: {
                 title: '💼 Develop Your Business Skills',
-                text: 'Start thinking like a business owner. Define your ideal client, set clear pricing, and create a simple offer. You don\'t need to be a marketing expert — just get clear on what you offer and who it\'s for.'
+                text: 'Start thinking like a business owner. Define your ideal client, set clear pricing, and create a simple offer. You don\'t need to be a marketing expert  - just get clear on what you offer and who it\'s for.'
             },
             content: {
                 title: '🎬 Start Creating Content',
-                text: 'Begin recording short coaching tips on your phone. It doesn\'t have to be perfect — consistency beats quality early on. Dedicate a few hours each week to creating content and you\'ll build the skill fast.'
+                text: 'Begin recording short coaching tips on your phone. It doesn\'t have to be perfect  - consistency beats quality early on. Dedicate a few hours each week to creating content and you\'ll build the skill fast.'
             },
             digital: {
                 title: '📱 Build Your Online Presence',
-                text: 'Set up a dedicated coaching profile on Instagram or YouTube. Start posting regularly — even simple drill videos or coaching insights. Get comfortable with basic tools like Canva for graphics and CapCut for video editing.'
+                text: 'Set up a dedicated coaching profile on Instagram or YouTube. Start posting regularly  - even simple drill videos or coaching insights. Get comfortable with basic tools like Canva for graphics and CapCut for video editing.'
             }
         };
 
@@ -1462,7 +1462,7 @@ function renderRecommendations(scores, gatingIssues) {
     };
     recs.push({
         title: `⭐ Your Strength: ${strengthNames[strongest[0]]}`,
-        text: `At ${strongest[1]}%, this is your competitive advantage. Lean into this strength as you build your online coaching business — it will set you apart from other coaches.`
+        text: `At ${strongest[1]}%, this is your competitive advantage. Lean into this strength as you build your online coaching business  - it will set you apart from other coaches.`
     });
 
     const html = recs.map(r => `
@@ -1494,7 +1494,7 @@ function renderCTA(scores, gatingIssues) {
                 <li><span>💰</span> Land your first paying online clients in 28 days</li>
                 <li><span>🤝</span> 1-on-1 support and accountability throughout</li>
             </ul>
-            <p>Spots are limited to just 3 coaches — book your application call to see if you're a fit.</p>
+            <p>Spots are limited to just 3 coaches  - book your application call to see if you're a fit.</p>
             <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Book Your Challenge Application Call →</a>
         `;
     }
