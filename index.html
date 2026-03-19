@@ -930,7 +930,79 @@
 
     </div>
 
+<!-- HubSpot Tracking Code -->
+<script type="text/javascript" id="hs-script-loader" async defer
+  src="//js-eu1.hs-scripts.com/148065158.js">
+</script>
+
 <script>
+// ═══════════════════════════════════════════
+//  HUBSPOT INTEGRATION
+// ═══════════════════════════════════════════
+function sendToHubSpot(leadInfo, scores, gatingIssues) {
+    var portalId = '148065158';
+    var formGuid = '620f4f60-79ba-4fbd-8915-bf3ce8e44d06';
+
+    // Determine readiness level
+    var readinessLevel;
+    if (gatingIssues.length > 0) {
+        readinessLevel = 'Not Ready';
+    } else if (scores.overall >= 75) {
+        readinessLevel = 'Launch Now';
+    } else if (scores.overall >= 55) {
+        readinessLevel = 'Ready';
+    } else {
+        readinessLevel = 'Getting There';
+    }
+
+    // Grab the HubSpot tracking cookie
+    var hutk = null;
+    var cookies = document.cookie.split('; ');
+    for (var i = 0; i < cookies.length; i++) {
+        if (cookies[i].indexOf('hubspotutk=') === 0) {
+            hutk = cookies[i].split('=')[1];
+            break;
+        }
+    }
+
+    var data = {
+        fields: [
+            { name: 'email', value: leadInfo.email },
+            { name: 'firstname', value: leadInfo.firstName },
+            { name: 'lastname', value: leadInfo.lastName },
+            { name: 'phone', value: leadInfo.phone },
+            { name: 'quiz_score', value: String(scores.overall) },
+            { name: 'readiness_level', value: readinessLevel }
+        ],
+        context: {
+            pageUri: window.location.href,
+            pageName: document.title
+        }
+    };
+
+    // Only include hutk if the cookie exists
+    if (hutk) {
+        data.context.hutk = hutk;
+    }
+
+    fetch('https://api.hsforms.com/submissions/v3/integration/submit/' + portalId + '/' + formGuid, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(function(response) {
+        if (response.ok) {
+            console.log('HubSpot: submission successful');
+        } else {
+            console.error('HubSpot: submission failed', response.status);
+            response.json().then(function(err) { console.error('HubSpot error details:', err); });
+        }
+    })
+    .catch(function(error) {
+        console.error('HubSpot: network error', error);
+    });
+}
+
 // ═══════════════════════════════════════════
 //  QUIZ DATA
 // ═══════════════════════════════════════════
@@ -1185,7 +1257,6 @@ function submitLeadForm(e) {
 function checkGatingCriteria() {
     const issues = [];
 
-    // Q1: Coaching experience — must answer C or D (index 2 or 3) — 1+ years
     const expAnswer = answers[0];
     if (expAnswer !== null && expAnswer < 2) {
         issues.push({
@@ -1194,7 +1265,6 @@ function checkGatingCriteria() {
         });
     }
 
-    // Q2: Qualification — must answer C or D (index 2 or 3) — holds a qualification
     const qualAnswer = answers[1];
     if (qualAnswer !== null && qualAnswer < 2) {
         issues.push({
@@ -1203,7 +1273,6 @@ function checkGatingCriteria() {
         });
     }
 
-    // Q3: Full-time — must answer C or D (index 2 or 3) — not hobby or casual part-time
     const ftAnswer = answers[2];
     if (ftAnswer !== null && ftAnswer < 2) {
         issues.push({
@@ -1212,7 +1281,6 @@ function checkGatingCriteria() {
         });
     }
 
-    // Q10: Time — must answer B, C, or D (index 1, 2, or 3) — at least 1-2 hours/week
     const timeAnswer = answers[9];
     if (timeAnswer !== null && timeAnswer < 1) {
         issues.push({
@@ -1233,6 +1301,9 @@ function showResults() {
 
     const scores = calculateScores();
     const gatingIssues = checkGatingCriteria();
+
+    // ── SEND TO HUBSPOT ──
+    sendToHubSpot(leadData, scores, gatingIssues);
 
     renderResultBadge(scores, gatingIssues);
     renderGatingWarnings(gatingIssues);
@@ -1279,7 +1350,6 @@ function renderResultBadge(scores, gatingIssues) {
         emoji = '🚧'; level = 'Not Quite Yet'; title = 'You\'ve Got Some Groundwork to Do';
         color = '#FF8A65'; subtitle = 'You\'re not ready to go online yet — but that\'s okay. Here\'s exactly what to focus on first.';
     } else {
-        // Passed all gates — they qualify
         if (scores.overall >= 75) {
             emoji = '🚀'; level = 'Ready to Launch'; title = 'You\'re Absolutely Ready to Go Online!';
             color = '#4CAF50'; subtitle = 'You have the experience, skills, and mindset. It\'s time to start building your online coaching business.';
@@ -1349,7 +1419,6 @@ function renderBreakdown(scores) {
 
     document.getElementById('breakdown').innerHTML = `<h3>Your Breakdown</h3>${html}`;
 
-    // Animate bars
     setTimeout(() => {
         document.querySelectorAll('.breakdown-fill').forEach(bar => {
             bar.style.width = bar.dataset.width + '%';
@@ -1363,7 +1432,6 @@ function renderRecommendations(scores, gatingIssues) {
         .filter(([k]) => k !== 'overall')
         .sort((a, b) => a[1] - b[1]);
 
-    // Recommendations for 2 weakest areas
     sorted.slice(0, 2).forEach(([dim, score]) => {
         const tips = {
             experience: {
@@ -1387,7 +1455,6 @@ function renderRecommendations(scores, gatingIssues) {
         if (tips[dim]) recs.push(tips[dim]);
     });
 
-    // Strength callout
     const strongest = sorted[sorted.length - 1];
     const strengthNames = {
         experience: 'Coaching Experience', business: 'Business Readiness',
