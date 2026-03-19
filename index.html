@@ -915,12 +915,13 @@
 
 
             <div class="share-section">
-                <button class="btn-share" onclick="copyResults()">📋 Copy Results</button>
-                <button class="btn-share" onclick="shareResults()">📤 Share</button>
+                <button class="btn-share" onclick="downloadPDF()" style="padding: 14px 32px; font-size: 0.95rem;">📄 Download Your Results (PDF)</button>
             </div>
         </div>
 
     </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 
 <!-- HubSpot Tracking Code -->
 <script type="text/javascript" id="hs-script-loader" async defer
@@ -1498,29 +1499,246 @@ function renderCTA(scores, gatingIssues) {
 }
 
 // ═══════════════════════════════════════════
-//  SHARE & RETAKE
+//  PDF DOWNLOAD
 // ═══════════════════════════════════════════
-function copyResults() {
-    const scores = calculateScores();
-    const text = `🎾 My Online Coaching Readiness: ${scores.overall}%\n\nExperience: ${scores.experience}% | Business: ${scores.business}% | Content: ${scores.content}% | Digital: ${scores.digital}%\n\nAre YOU ready to take your coaching online? Take the quiz!`;
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const w = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const contentW = w - margin * 2;
+    let y = 20;
 
-    navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector('.btn-share');
-        btn.textContent = '✅ Copied!';
-        setTimeout(() => { btn.innerHTML = '📋 Copy Results'; }, 2000);
-    });
-}
-
-function shareResults() {
     const scores = calculateScores();
-    if (navigator.share) {
-        navigator.share({
-            title: 'My Online Coaching Readiness Score',
-            text: `🎾 I scored ${scores.overall}% on the Online Coaching Readiness Quiz! Are you ready to take your coaching online?`
-        });
+    const gatingIssues = checkGatingCriteria();
+    const name = `${leadData.firstName || ''} ${leadData.lastName || ''}`.trim() || 'Coach';
+
+    // Helper: strip emoji from start of string
+    const stripEmoji = str => str.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{2702}-\u{27B0}⭐⚡⏳⏰📜]\s*/u, '');
+
+    // ── Header ──
+    doc.setFillColor(10, 10, 10);
+    doc.rect(0, 0, w, 52, 'F');
+
+    doc.setTextColor(76, 175, 80);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FIRST LAUNCH', margin, 15);
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Online Coaching Readiness Report', margin, 28);
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(180, 180, 180);
+    doc.text(`Prepared for ${name}  |  ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`, margin, 38);
+
+    y = 60;
+
+    // ── Overall Score ──
+    let resultLabel, scoreColor;
+    if (gatingIssues.length > 0) {
+        resultLabel = 'Not Ready Yet';
+        scoreColor = [255, 138, 101];
+    } else if (scores.overall >= 75) {
+        resultLabel = 'Ready to Launch';
+        scoreColor = [76, 175, 80];
+    } else if (scores.overall >= 55) {
+        resultLabel = 'Ready to Launch';
+        scoreColor = [129, 199, 132];
     } else {
-        copyResults();
+        resultLabel = 'You Qualify';
+        scoreColor = [129, 199, 132];
     }
+
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(margin, y, contentW, 36, 3, 3, 'F');
+
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(60, 60, 60);
+    doc.text('Your Readiness Score', margin + 10, y + 12);
+
+    doc.setFontSize(28);
+    doc.setTextColor(...scoreColor);
+    doc.text(`${scores.overall}%`, margin + 10, y + 28);
+
+    doc.setFontSize(12);
+    doc.setTextColor(100, 100, 100);
+    doc.text(resultLabel, margin + 40, y + 28);
+
+    // Score bar
+    const barX = margin + 85;
+    const barW = contentW - 95;
+    const barY = y + 16;
+    doc.setFillColor(220, 220, 220);
+    doc.roundedRect(barX, barY, barW, 6, 3, 3, 'F');
+    doc.setFillColor(...scoreColor);
+    doc.roundedRect(barX, barY, barW * (scores.overall / 100), 6, 3, 3, 'F');
+
+    y += 46;
+
+    // ── Gating Warnings ──
+    if (gatingIssues.length > 0) {
+        doc.setFillColor(255, 243, 235);
+        const gateH = 12 + gatingIssues.length * 14;
+        doc.roundedRect(margin, y, contentW, gateH, 3, 3, 'F');
+        doc.setDrawColor(255, 138, 101);
+        doc.roundedRect(margin, y, contentW, gateH, 3, 3, 'S');
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(200, 80, 40);
+        doc.text('Areas to Address Before Going Online', margin + 8, y + 9);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(80, 80, 80);
+        gatingIssues.forEach((issue, i) => {
+            const lines = doc.splitTextToSize(stripEmoji(issue.text), contentW - 22);
+            doc.text(lines[0], margin + 8, y + 20 + i * 14);
+            if (lines[1]) doc.text(lines[1], margin + 8, y + 24 + i * 14);
+        });
+
+        y += gateH + 8;
+    }
+
+    // ── Breakdown ──
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(40, 40, 40);
+    doc.text('Your Breakdown', margin, y + 6);
+    y += 14;
+
+    const dims = [
+        { key: 'experience', name: 'Coaching Experience & Credentials', color: [76, 175, 80] },
+        { key: 'business', name: 'Business & Client Readiness', color: [33, 150, 243] },
+        { key: 'content', name: 'Content & Communication', color: [156, 39, 176] },
+        { key: 'digital', name: 'Digital Skills & Online Presence', color: [255, 152, 0] }
+    ];
+
+    dims.forEach(d => {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(80, 80, 80);
+        doc.text(d.name, margin, y + 4);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...d.color);
+        doc.text(`${scores[d.key]}%`, w - margin - 12, y + 4);
+
+        // Bar
+        const barY2 = y + 7;
+        doc.setFillColor(230, 230, 230);
+        doc.roundedRect(margin, barY2, contentW, 4, 2, 2, 'F');
+        doc.setFillColor(...d.color);
+        doc.roundedRect(margin, barY2, contentW * (scores[d.key] / 100), 4, 2, 2, 'F');
+
+        y += 18;
+    });
+
+    y += 6;
+
+    // ── Action Plan ──
+    // Rebuild the same recommendations as the on-screen version
+    const recs = [];
+    const sorted = Object.entries(scores)
+        .filter(([k]) => k !== 'overall')
+        .sort((a, b) => a[1] - b[1]);
+
+    const tips = {
+        experience: {
+            title: 'Build Your Coaching Track Record',
+            text: 'Focus on gaining more on-court experience and building up a base of regular clients. The stronger your real-world coaching reputation, the easier it is to sell online. Consider getting your next coaching qualification too.'
+        },
+        business: {
+            title: 'Develop Your Business Skills',
+            text: 'Start thinking like a business owner. Define your ideal client, set clear pricing, and create a simple offer. You don\'t need to be a marketing expert - just get clear on what you offer and who it\'s for.'
+        },
+        content: {
+            title: 'Start Creating Content',
+            text: 'Begin recording short coaching tips on your phone. It doesn\'t have to be perfect - consistency beats quality early on. Dedicate a few hours each week to creating content and you\'ll build the skill fast.'
+        },
+        digital: {
+            title: 'Build Your Online Presence',
+            text: 'Set up a dedicated coaching profile on Instagram or YouTube. Start posting regularly - even simple drill videos or coaching insights. Get comfortable with basic tools like Canva for graphics and CapCut for video editing.'
+        }
+    };
+
+    sorted.slice(0, 2).forEach(([dim]) => {
+        if (tips[dim]) recs.push(tips[dim]);
+    });
+
+    const strengthNames = {
+        experience: 'Coaching Experience', business: 'Business Readiness',
+        content: 'Content & Communication', digital: 'Digital Skills'
+    };
+    const strongest = sorted[sorted.length - 1];
+    recs.push({
+        title: `Your Strength: ${strengthNames[strongest[0]]}`,
+        text: `At ${strongest[1]}%, this is your competitive advantage. Lean into this strength as you build your online coaching business - it will set you apart from other coaches.`
+    });
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(40, 40, 40);
+    doc.text('Your Personalised Action Plan', margin, y + 4);
+    y += 12;
+
+    recs.forEach((rec, idx) => {
+        // Check if we need a new page
+        if (y > 255) {
+            doc.addPage();
+            y = 20;
+        }
+
+        doc.setFillColor(idx === recs.length - 1 ? 240 : 248, idx === recs.length - 1 ? 248 : 248, idx === recs.length - 1 ? 240 : 248);
+
+        const titleLines = doc.splitTextToSize(rec.title, contentW - 16);
+        const bodyLines = doc.splitTextToSize(rec.text, contentW - 16);
+        const boxH = 14 + bodyLines.length * 5;
+
+        doc.roundedRect(margin, y, contentW, boxH, 3, 3, 'F');
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(40, 40, 40);
+        doc.text(rec.title, margin + 8, y + 9);
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text(bodyLines, margin + 8, y + 17);
+
+        y += boxH + 6;
+    });
+
+    // ── Footer ──
+    if (y > 250) {
+        doc.addPage();
+        y = 20;
+    }
+
+    y += 8;
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, y, w - margin, y);
+    y += 10;
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(150, 150, 150);
+    doc.text('Generated by First Launch  |  firstlaunch.co.uk', margin, y);
+
+    // Save
+    doc.save(`coaching-readiness-report-${leadData.firstName || 'results'}.pdf`);
+
+    // Button feedback
+    const btn = document.querySelector('.btn-share');
+    const original = btn.innerHTML;
+    btn.innerHTML = '✅ Downloaded!';
+    setTimeout(() => { btn.innerHTML = original; }, 2000);
 }
 
 function retakeQuiz() {
