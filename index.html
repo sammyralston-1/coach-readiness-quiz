@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Coaching Readiness Quiz | Are You Ready to Earn Online?</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-glow {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(76, 175, 80, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(255, 193, 7, 0.06) 0%, transparent 50%);
+            animation: glowMove 15s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes glowMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(5%, -3%); }
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ── Landing Screen ── */
+        .landing {
+            text-align: center;
+            animation: fadeUp 0.8s ease;
+        }
+
+        .landing-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .landing h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #4CAF50, #81C784, #FFD54F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing p {
+            font-size: 1.1rem;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .landing-features {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .landing-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .landing-feature span {
+            font-size: 1.2rem;
+        }
+
+        .btn-start {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            color: #fff;
+            border: none;
+            padding: 18px 48px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 24px rgba(76, 175, 80, 0.3);
+            font-family: inherit;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.45);
+        }
+
+        .btn-start:active {
+            transform: translateY(0);
+        }
+
+        .landing-note {
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* ── Progress Bar ── */
+        .progress-wrapper {
+            margin-bottom: 32px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .progress-count {
+            font-size: 0.85rem;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
+        /* ── Question Card ── */
+        .quiz-screen {
+            display: none;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .quiz-screen.active {
+            display: block;
+        }
+
+        .question-category {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.12);
+            color: #81C784;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 28px;
+            color: #f0f0f0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: #141414;
+            border: 2px solid #222;
+            border-radius: 14px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-family: inherit;
+            text-align: left;
+            color: #ddd;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .option:hover {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.06);
+        }
+
+        .option.selected {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #1e1e1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #888;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .option.selected .option-letter {
+            background: #4CAF50;
+            color: #fff;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        /* ── Navigation ── */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            gap: 12px;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 2px solid #333;
+            color: #aaa;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .btn-back:hover {
+            border-color: #555;
+            color: #fff;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            border: none;
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            margin-left: auto;
+            box-shadow: 0 2px 12px rgba(76, 175, 80, 0.25);
+        }
+
+        .btn-next:hover {
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── Results Screen ── */
+        .results-screen {
+            display: none;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .result-badge {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .result-emoji {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .result-level {
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .result-score-bar {
+            max-width: 360px;
+            margin: 20px auto;
+        }
+
+        .score-bar-track {
+            height: 12px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
+        .score-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .score-percentage {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 12px 0 4px;
+        }
+
+        .score-subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        /* Gating warning */
+        .gating-warning {
+            background: rgba(255, 87, 34, 0.08);
+            border: 1px solid rgba(255, 87, 34, 0.25);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .gating-warning h4 {
+            color: #FF8A65;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gating-warning ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .gating-warning li {
+            color: #ccc;
+            font-size: 0.9rem;
+            padding: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .gating-warning li .icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .gating-warning .bottom-note {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 87, 34, 0.15);
+            color: #999;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Breakdown */
+        .breakdown {
+            margin-top: 36px;
+        }
+
+        .breakdown h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #f0f0f0;
+        }
+
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .breakdown-icon {
+            font-size: 1.6rem;
+            width: 44px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .breakdown-info {
+            flex: 1;
+        }
+
+        .breakdown-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            color: #ddd;
+        }
+
+        .breakdown-bar {
+            height: 6px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+            width: 0%;
+        }
+
+        .breakdown-score {
+            font-weight: 700;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            width: 48px;
+            text-align: right;
+        }
+
+        /* Recommendations */
+        .recommendations {
+            margin-top: 36px;
+        }
+
+        .recommendations h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #f0f0f0;
+        }
+
+        .rec-card {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .rec-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rec-card p {
+            color: #999;
+            font-size: 0.9rem;
+            line-height: 1.55;
+        }
+
+        /* CTA at bottom of results */
+        .results-cta {
+            margin-top: 48px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(255, 193, 7, 0.06));
+            border: 1px solid rgba(76, 175, 80, 0.25);
+            border-radius: 20px;
+            padding: 44px 32px;
+        }
+
+        .results-cta h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .results-cta p {
+            color: #bbb;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .results-cta .cta-details {
+            text-align: left;
+            max-width: 460px;
+            margin: 0 auto 28px;
+        }
+
+        .results-cta .cta-details li {
+            color: #ccc;
+            font-size: 0.95rem;
+            padding: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .results-cta .cta-details li span {
+            flex-shrink: 0;
+        }
+
+        .results-cta .cta-note {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 16px;
+        }
+
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 24px rgba(76, 175, 80, 0.3);
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.45);
+        }
+
+        .btn-retake {
+            display: inline-block;
+            margin-top: 16px;
+            color: #666;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            text-decoration: underline;
+        }
+
+        .btn-retake:hover {
+            color: #aaa;
+        }
+
+        /* Share buttons */
+        .share-section {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-share {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            color: #ccc;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-share:hover {
+            background: #282828;
+            border-color: #444;
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 500px) {
+            .landing h1 { font-size: 1.7rem; }
+            .question-text { font-size: 1.25rem; }
+            .landing-features { gap: 16px; }
+            .result-title { font-size: 1.6rem; }
+            .score-percentage { font-size: 2rem; }
+            .nav-buttons { flex-direction: column; }
+            .btn-next { margin-left: 0; }
+        }
+
+        /* ── Lead Capture Form ── */
+        .lead-screen {
+            display: none;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .lead-screen.active {
+            display: block;
+        }
+
+        .lead-card {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .lead-card .lead-icon {
+            font-size: 56px;
+            margin-bottom: 12px;
+        }
+
+        .lead-card h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4CAF50, #81C784, #FFD54F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lead-card p {
+            color: #aaa;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 460px;
+            margin: 0 auto;
+        }
+
+        .lead-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .lead-form .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .lead-form .form-group {
+            flex: 1;
+            text-align: left;
+        }
+
+        .lead-form label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+
+        .lead-form input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #141414;
+            border: 2px solid #222;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.25s ease;
+            outline: none;
+        }
+
+        .lead-form input::placeholder {
+            color: #555;
+        }
+
+        .lead-form input:focus {
+            border-color: #4CAF50;
+        }
+
+        .lead-form input.invalid {
+            border-color: #FF5722;
+        }
+
+        .lead-form .form-error {
+            color: #FF8A65;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .lead-form .form-error.visible {
+            display: block;
+        }
+
+        .btn-results {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 24px rgba(76, 175, 80, 0.3);
+            font-family: inherit;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn-results:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.45);
+        }
+
+        .btn-results:active {
+            transform: translateY(0);
+        }
+
+        .lead-privacy {
+            text-align: center;
+            color: #555;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .lead-form .form-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .lead-card h2 { font-size: 1.4rem; }
+        }
+
+        /* Hidden utility */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+
+        <!-- LANDING -->
+        <div class="landing" id="landing">
+            <div class="landing-icon">🖥️🎾</div>
+            <h1>Are You Ready to Take Your Coaching Online?</h1>
+            <p>Take this 2-minute quiz to find out if you're ready to start earning online as a tennis coach — and get a personalised action plan to make it happen.</p>
+            <div class="landing-features">
+                <div class="landing-feature"><span>📋</span> 10 Questions</div>
+                <div class="landing-feature"><span>⏱️</span> 2 Minutes</div>
+                <div class="landing-feature"><span>🎯</span> Personalised Plan</div>
+            </div>
+            <button class="btn-start" onclick="startQuiz()">
+                Take The Quiz →
+            </button>
+            <div class="landing-note">For tennis coaches ready to grow their business</div>
+        </div>
+
+        <!-- QUIZ -->
+        <div class="quiz-screen" id="quizScreen">
+            <div class="progress-wrapper">
+                <div class="progress-header">
+                    <span class="progress-label">Your Progress</span>
+                    <span class="progress-count" id="progressCount">1 / 10</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div id="questionArea"></div>
+
+            <div class="nav-buttons">
+                <button class="btn-back" id="btnBack" onclick="prevQuestion()">← Back</button>
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>Continue →</button>
+            </div>
+        </div>
+
+        <!-- LEAD CAPTURE -->
+        <div class="lead-screen" id="leadScreen">
+            <div class="lead-card">
+                <div class="lead-icon">🎯</div>
+                <h2>Almost There — Your Results Are Ready!</h2>
+                <p>Enter your details below to unlock your personalised readiness score and action plan.</p>
+            </div>
+
+            <form class="lead-form" id="leadForm" onsubmit="submitLeadForm(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" placeholder="e.g. James" required>
+                        <div class="form-error" id="firstNameError">Please enter your first name</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" placeholder="e.g. Smith" required>
+                        <div class="form-error" id="lastNameError">Please enter your last name</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="e.g. james@email.com" required>
+                    <div class="form-error" id="emailError">Please enter a valid email address</div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="e.g. +44 7700 900000" required>
+                    <div class="form-error" id="phoneError">Please enter your phone number</div>
+                </div>
+                <button type="submit" class="btn-results">See My Results →</button>
+                <div class="lead-privacy">🔒 Your info is safe — we'll never spam you.</div>
+            </form>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="result-badge" id="resultBadge"></div>
+
+            <div class="result-score-bar">
+                <div class="score-bar-track">
+                    <div class="score-bar-fill" id="scoreBarFill"></div>
+                </div>
+                <div class="score-labels">
+                    <span>Not Ready</span>
+                    <span>Getting There</span>
+                    <span>Ready</span>
+                    <span>Launch Now</span>
+                </div>
+            </div>
+
+            <div id="gatingArea"></div>
+            <div class="breakdown" id="breakdown"></div>
+            <div class="recommendations" id="recommendations"></div>
+
+            <div class="results-cta" id="resultsCta"></div>
+
+            <div style="margin-top: 40px; text-align: center;">
+                <button class="btn-retake" onclick="retakeQuiz()">↻ Retake Quiz</button>
+            </div>
+
+            <div class="share-section">
+                <button class="btn-share" onclick="copyResults()">📋 Copy Results</button>
+                <button class="btn-share" onclick="shareResults()">📤 Share</button>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+// ═══════════════════════════════════════════
+//  QUIZ DATA
+// ═══════════════════════════════════════════
+const questions = [
+    {
+        category: "Coaching Experience",
+        question: "How long have you been coaching tennis?",
+        options: [
+            { text: "I haven't started coaching yet", score: 1, gate: "experience" },
+            { text: "Less than a year", score: 2, gate: "experience" },
+            { text: "1–3 years", score: 3 },
+            { text: "4+ years — coaching is my career", score: 4 }
+        ],
+        dimension: "experience"
+    },
+    {
+        category: "Qualifications",
+        question: "Do you hold a recognised tennis coaching qualification?",
+        options: [
+            { text: "No, I'm not qualified", score: 1, gate: "qualification" },
+            { text: "I'm currently working towards one", score: 2, gate: "qualification" },
+            { text: "Yes — Level 1 or equivalent", score: 3 },
+            { text: "Yes — Level 2+ or equivalent (LTA, PTR, USPTA, RPT, etc.)", score: 4 }
+        ],
+        dimension: "experience"
+    },
+    {
+        category: "Coaching Commitment",
+        question: "Is tennis coaching your full-time job?",
+        options: [
+            { text: "No, it's just a hobby or side thing", score: 1, gate: "fulltime" },
+            { text: "Part-time — I coach a few hours a week", score: 2, gate: "fulltime" },
+            { text: "It's my main income but I have another small side gig", score: 3 },
+            { text: "100% full-time — this is what I do", score: 4 }
+        ],
+        dimension: "business"
+    },
+    {
+        category: "Playing Background",
+        question: "What's your playing experience?",
+        options: [
+            { text: "I'm a beginner/social player", score: 1 },
+            { text: "I play club-level and local competitions", score: 2 },
+            { text: "I've competed at county/regional level", score: 3 },
+            { text: "I've played at national level or higher", score: 4 }
+        ],
+        dimension: "experience"
+    },
+    {
+        category: "Client Base",
+        question: "How many regular clients or students do you currently coach?",
+        options: [
+            { text: "None yet or just a few friends/family", score: 1 },
+            { text: "5–10 regular clients", score: 2 },
+            { text: "10–25 regular clients", score: 3 },
+            { text: "25+ clients — I have a full book", score: 4 }
+        ],
+        dimension: "business"
+    },
+    {
+        category: "Content & Teaching",
+        question: "How confident are you explaining technique and tactics through video or writing?",
+        options: [
+            { text: "I've never tried — I only coach in person", score: 1 },
+            { text: "I've done it a few times but it feels awkward", score: 2 },
+            { text: "I'm fairly comfortable and have created some content", score: 3 },
+            { text: "I'm great at it — I regularly create coaching content", score: 4 }
+        ],
+        dimension: "content"
+    },
+    {
+        category: "Tech Readiness",
+        question: "How comfortable are you with technology and online tools?",
+        options: [
+            { text: "I struggle with the basics — email, apps, etc.", score: 1 },
+            { text: "I can manage social media and basic tools", score: 2 },
+            { text: "I'm comfortable with video editing, platforms, and online tools", score: 3 },
+            { text: "I'm very tech-savvy — I already use tools like Canva, Kajabi, Zoom, etc.", score: 4 }
+        ],
+        dimension: "digital"
+    },
+    {
+        category: "Online Presence",
+        question: "Do you currently have an online presence for your coaching?",
+        options: [
+            { text: "Nothing — I don't have any social media or website for coaching", score: 1 },
+            { text: "I have a personal social media account where I sometimes post about tennis", score: 2 },
+            { text: "I have a dedicated coaching profile/page with a small following", score: 3 },
+            { text: "I have an established brand — website, social media, and engaged followers", score: 4 }
+        ],
+        dimension: "digital"
+    },
+    {
+        category: "Business Mindset",
+        question: "How do you feel about selling your coaching services online?",
+        options: [
+            { text: "It feels uncomfortable — I don't want to 'sell' myself", score: 1 },
+            { text: "I'm open to it but I wouldn't know where to start", score: 2 },
+            { text: "I've started thinking about pricing and offers", score: 3 },
+            { text: "I already know my value and I'm confident charging for my expertise", score: 4 }
+        ],
+        dimension: "business"
+    },
+    {
+        category: "Time & Motivation",
+        question: "How much time could you dedicate each week to building an online coaching business?",
+        options: [
+            { text: "None really — my schedule is completely full", score: 1 },
+            { text: "Maybe 1–2 hours if I squeezed it in", score: 2 },
+            { text: "3–5 hours — I'm ready to commit", score: 3 },
+            { text: "5+ hours — I'm all in and ready to make this happen", score: 4 }
+        ],
+        dimension: "content"
+    }
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let currentQuestion = 0;
+let answers = new Array(questions.length).fill(null);
+
+// ═══════════════════════════════════════════
+//  QUIZ FLOW
+// ═══════════════════════════════════════════
+function startQuiz() {
+    document.getElementById('landing').classList.add('hidden');
+    const quizScreen = document.getElementById('quizScreen');
+    quizScreen.classList.add('active');
+    renderQuestion();
+}
+
+function renderQuestion() {
+    const q = questions[currentQuestion];
+    const area = document.getElementById('questionArea');
+
+    area.innerHTML = `
+        <div class="question-category">${q.category}</div>
+        <div class="question-text">${q.question}</div>
+        <div class="options">
+            ${q.options.map((opt, i) => `
+                <button class="option ${answers[currentQuestion] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+                    <div class="option-letter">${String.fromCharCode(65 + i)}</div>
+                    <div class="option-text">${opt.text}</div>
+                </button>
+            `).join('')}
+        </div>
+    `;
+
+    // Update progress
+    document.getElementById('progressCount').textContent = `${currentQuestion + 1} / ${questions.length}`;
+    document.getElementById('progressFill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+    // Navigation state
+    document.getElementById('btnBack').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+    document.getElementById('btnNext').disabled = answers[currentQuestion] === null;
+    document.getElementById('btnNext').textContent = currentQuestion === questions.length - 1 ? 'See My Results →' : 'Continue →';
+}
+
+function selectOption(index) {
+    answers[currentQuestion] = index;
+
+    document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.toggle('selected', i === index);
+    });
+
+    document.getElementById('btnNext').disabled = false;
+
+    // Auto-advance after a short delay
+    setTimeout(() => {
+        nextQuestion();
+    }, 350);
+}
+
+function nextQuestion() {
+    if (answers[currentQuestion] === null) return;
+
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+        // Re-trigger animation
+        const area = document.getElementById('questionArea');
+        area.style.animation = 'none';
+        area.offsetHeight;
+        area.style.animation = 'fadeUp 0.4s ease';
+    } else {
+        showLeadCapture();
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+    }
+}
+
+// ═══════════════════════════════════════════
+//  LEAD CAPTURE
+// ═══════════════════════════════════════════
+let leadData = {};
+
+function showLeadCapture() {
+    document.getElementById('quizScreen').classList.remove('active');
+    document.getElementById('leadScreen').classList.add('active');
+    window.scrollTo(0, 0);
+    // Focus the first field
+    setTimeout(() => document.getElementById('firstName').focus(), 400);
+}
+
+function submitLeadForm(e) {
+    e.preventDefault();
+
+    const fields = [
+        { id: 'firstName', errorId: 'firstNameError', validate: v => v.trim().length > 0 },
+        { id: 'lastName', errorId: 'lastNameError', validate: v => v.trim().length > 0 },
+        { id: 'email', errorId: 'emailError', validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+        { id: 'phone', errorId: 'phoneError', validate: v => v.trim().length >= 6 }
+    ];
+
+    let valid = true;
+
+    fields.forEach(f => {
+        const input = document.getElementById(f.id);
+        const error = document.getElementById(f.errorId);
+        if (!f.validate(input.value)) {
+            input.classList.add('invalid');
+            error.classList.add('visible');
+            valid = false;
+        } else {
+            input.classList.remove('invalid');
+            error.classList.remove('visible');
+        }
+    });
+
+    if (!valid) return;
+
+    leadData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim()
+    };
+
+    document.getElementById('leadScreen').classList.remove('active');
+    showResults();
+}
+
+// ═══════════════════════════════════════════
+//  GATING LOGIC
+// ═══════════════════════════════════════════
+function checkGatingCriteria() {
+    const issues = [];
+
+    // Q1: Coaching experience — must answer C or D (index 2 or 3) — 1+ years
+    const expAnswer = answers[0];
+    if (expAnswer !== null && expAnswer < 2) {
+        issues.push({
+            icon: '⏳',
+            text: 'You need at least 1 year of coaching experience before going online. Spend time building your on-court skills and client track record first.'
+        });
+    }
+
+    // Q2: Qualification — must answer C or D (index 2 or 3) — holds a qualification
+    const qualAnswer = answers[1];
+    if (qualAnswer !== null && qualAnswer < 2) {
+        issues.push({
+            icon: '📜',
+            text: 'A recognised coaching qualification is essential for credibility online. Players need to trust that you\'re certified to teach. Get qualified first.'
+        });
+    }
+
+    // Q3: Full-time — must answer C or D (index 2 or 3) — not hobby or casual part-time
+    const ftAnswer = answers[2];
+    if (ftAnswer !== null && ftAnswer < 2) {
+        issues.push({
+            icon: '⚡',
+            text: 'You need to be coaching as your main focus — at least as your primary income. Build coaching into a serious career before expanding online.'
+        });
+    }
+
+    // Q10: Time — must answer B, C, or D (index 1, 2, or 3) — at least 1-2 hours/week
+    const timeAnswer = answers[9];
+    if (timeAnswer !== null && timeAnswer < 1) {
+        issues.push({
+            icon: '⏰',
+            text: 'You need to have at least 1–2 hours per week to dedicate to building your online coaching business. Without any time to commit, it won\'t get off the ground.'
+        });
+    }
+
+    return issues;
+}
+
+// ═══════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════
+function showResults() {
+    document.getElementById('quizScreen').classList.remove('active');
+    document.getElementById('resultsScreen').classList.add('active');
+
+    const scores = calculateScores();
+    const gatingIssues = checkGatingCriteria();
+
+    renderResultBadge(scores, gatingIssues);
+    renderGatingWarnings(gatingIssues);
+    renderBreakdown(scores);
+    renderRecommendations(scores, gatingIssues);
+    renderCTA(scores, gatingIssues);
+
+    // Animate score bar
+    setTimeout(() => {
+        document.getElementById('scoreBarFill').style.width = `${scores.overall}%`;
+    }, 200);
+}
+
+function calculateScores() {
+    const dims = { experience: [], business: [], content: [], digital: [] };
+
+    questions.forEach((q, i) => {
+        const selected = answers[i];
+        if (selected !== null) {
+            dims[q.dimension].push(q.options[selected].score);
+        }
+    });
+
+    const avgScore = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    const toPercent = avg => Math.round((avg / 4) * 100);
+
+    const dimensionScores = {
+        experience: toPercent(avgScore(dims.experience)),
+        business: toPercent(avgScore(dims.business)),
+        content: toPercent(avgScore(dims.content)),
+        digital: toPercent(avgScore(dims.digital))
+    };
+
+    const allScores = answers.map((a, i) => a !== null ? questions[i].options[a].score : 0);
+    const overall = toPercent(avgScore(allScores));
+
+    return { ...dimensionScores, overall };
+}
+
+function renderResultBadge(scores, gatingIssues) {
+    let emoji, level, title, color, subtitle;
+
+    if (gatingIssues.length > 0) {
+        emoji = '🚧'; level = 'Not Quite Yet'; title = 'You\'ve Got Some Groundwork to Do';
+        color = '#FF8A65'; subtitle = 'You\'re not ready to go online yet — but that\'s okay. Here\'s exactly what to focus on first.';
+    } else {
+        // Passed all gates — they qualify
+        if (scores.overall >= 75) {
+            emoji = '🚀'; level = 'Ready to Launch'; title = 'You\'re Absolutely Ready to Go Online!';
+            color = '#4CAF50'; subtitle = 'You have the experience, skills, and mindset. It\'s time to start building your online coaching business.';
+        } else if (scores.overall >= 55) {
+            emoji = '💪'; level = 'Ready to Launch'; title = 'You\'re Ready to Go Online!';
+            color = '#81C784'; subtitle = 'You\'ve got the foundations that matter. Let\'s build your online coaching business together.';
+        } else {
+            emoji = '✅'; level = 'You Qualify'; title = 'You\'re Ready to Take the Next Step!';
+            color = '#81C784'; subtitle = 'You have the coaching credentials and commitment. Now let\'s get you set up online.';
+        }
+    }
+
+    document.getElementById('resultBadge').innerHTML = `
+        <span class="result-emoji">${emoji}</span>
+        <div class="result-level" style="color: ${color}">${level}</div>
+        <div class="result-title">${title}</div>
+        <div class="score-percentage" style="color: ${color}">${scores.overall}%</div>
+        <div class="score-subtitle">${subtitle}</div>
+    `;
+
+    document.getElementById('scoreBarFill').style.background = `linear-gradient(90deg, ${color}, ${color}88)`;
+}
+
+function renderGatingWarnings(issues) {
+    const area = document.getElementById('gatingArea');
+    if (issues.length === 0) {
+        area.innerHTML = '';
+        return;
+    }
+
+    area.innerHTML = `
+        <div class="gating-warning">
+            <h4>⚠️ Important — Before You Go Online</h4>
+            <ul>
+                ${issues.map(i => `
+                    <li>
+                        <span class="icon">${i.icon}</span>
+                        <span>${i.text}</span>
+                    </li>
+                `).join('')}
+            </ul>
+            <div class="bottom-note">These are non-negotiables for building a credible and sustainable online coaching business. Address these first, then retake the quiz.</div>
+        </div>
+    `;
+}
+
+function renderBreakdown(scores) {
+    const dims = [
+        { key: 'experience', name: 'Coaching Experience & Credentials', icon: '🎾', color: '#4CAF50' },
+        { key: 'business', name: 'Business & Client Readiness', icon: '💼', color: '#2196F3' },
+        { key: 'content', name: 'Content & Communication', icon: '🎬', color: '#9C27B0' },
+        { key: 'digital', name: 'Digital Skills & Online Presence', icon: '📱', color: '#FF9800' }
+    ];
+
+    const html = dims.map(d => `
+        <div class="breakdown-item">
+            <div class="breakdown-icon">${d.icon}</div>
+            <div class="breakdown-info">
+                <div class="breakdown-name">${d.name}</div>
+                <div class="breakdown-bar">
+                    <div class="breakdown-fill" data-width="${scores[d.key]}" style="background: ${d.color}"></div>
+                </div>
+            </div>
+            <div class="breakdown-score" style="color: ${d.color}">${scores[d.key]}%</div>
+        </div>
+    `).join('');
+
+    document.getElementById('breakdown').innerHTML = `<h3>Your Breakdown</h3>${html}`;
+
+    // Animate bars
+    setTimeout(() => {
+        document.querySelectorAll('.breakdown-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+        });
+    }, 400);
+}
+
+function renderRecommendations(scores, gatingIssues) {
+    const recs = [];
+    const sorted = Object.entries(scores)
+        .filter(([k]) => k !== 'overall')
+        .sort((a, b) => a[1] - b[1]);
+
+    // Recommendations for 2 weakest areas
+    sorted.slice(0, 2).forEach(([dim, score]) => {
+        const tips = {
+            experience: {
+                title: '🎾 Build Your Coaching Track Record',
+                text: 'Focus on gaining more on-court experience and building up a base of regular clients. The stronger your real-world coaching reputation, the easier it is to sell online. Consider getting your next coaching qualification too.'
+            },
+            business: {
+                title: '💼 Develop Your Business Skills',
+                text: 'Start thinking like a business owner. Define your ideal client, set clear pricing, and create a simple offer. You don\'t need to be a marketing expert — just get clear on what you offer and who it\'s for.'
+            },
+            content: {
+                title: '🎬 Start Creating Content',
+                text: 'Begin recording short coaching tips on your phone. It doesn\'t have to be perfect — consistency beats quality early on. Dedicate a few hours each week to creating content and you\'ll build the skill fast.'
+            },
+            digital: {
+                title: '📱 Build Your Online Presence',
+                text: 'Set up a dedicated coaching profile on Instagram or YouTube. Start posting regularly — even simple drill videos or coaching insights. Get comfortable with basic tools like Canva for graphics and CapCut for video editing.'
+            }
+        };
+
+        if (tips[dim]) recs.push(tips[dim]);
+    });
+
+    // Strength callout
+    const strongest = sorted[sorted.length - 1];
+    const strengthNames = {
+        experience: 'Coaching Experience', business: 'Business Readiness',
+        content: 'Content & Communication', digital: 'Digital Skills'
+    };
+    recs.push({
+        title: `⭐ Your Strength: ${strengthNames[strongest[0]]}`,
+        text: `At ${strongest[1]}%, this is your competitive advantage. Lean into this strength as you build your online coaching business — it will set you apart from other coaches.`
+    });
+
+    const html = recs.map(r => `
+        <div class="rec-card">
+            <h4>${r.title}</h4>
+            <p>${r.text}</p>
+        </div>
+    `).join('');
+
+    document.getElementById('recommendations').innerHTML = `<h3>Your Action Plan</h3>${html}`;
+}
+
+function renderCTA(scores, gatingIssues) {
+    const cta = document.getElementById('resultsCta');
+
+    if (gatingIssues.length > 0) {
+        cta.innerHTML = `
+            <h3>Not ready yet? That's completely fine.</h3>
+            <p>Focus on the areas above, build your coaching foundation, and come back when you've ticked those boxes. We'll be here when you're ready.</p>
+            <button class="btn-cta" onclick="retakeQuiz()">↻ Retake When You're Ready</button>
+        `;
+    } else {
+        cta.innerHTML = `
+            <h3>Ready to Start Earning Online?</h3>
+            <p>I'm running a free 28-day challenge where I personally help <strong style="color:#fff">3 full-time tennis coaches</strong> get set up online and land their first online clients.</p>
+            <ul class="cta-details">
+                <li><span>🛠️</span> Get your online coaching tools fully set up</li>
+                <li><span>🎯</span> Build your offer and online presence from scratch</li>
+                <li><span>💰</span> Land your first paying online clients in 28 days</li>
+                <li><span>🤝</span> 1-on-1 support and accountability throughout</li>
+            </ul>
+            <p>Spots are limited to just 3 coaches — book your application call to see if you're a fit.</p>
+            <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Book Your Challenge Application Call →</a>
+        `;
+    }
+}
+
+// ═══════════════════════════════════════════
+//  SHARE & RETAKE
+// ═══════════════════════════════════════════
+function copyResults() {
+    const scores = calculateScores();
+    const text = `🎾 My Online Coaching Readiness: ${scores.overall}%\n\nExperience: ${scores.experience}% | Business: ${scores.business}% | Content: ${scores.content}% | Digital: ${scores.digital}%\n\nAre YOU ready to take your coaching online? Take the quiz!`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.btn-share');
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => { btn.innerHTML = '📋 Copy Results'; }, 2000);
+    });
+}
+
+function shareResults() {
+    const scores = calculateScores();
+    if (navigator.share) {
+        navigator.share({
+            title: 'My Online Coaching Readiness Score',
+            text: `🎾 I scored ${scores.overall}% on the Online Coaching Readiness Quiz! Are you ready to take your coaching online?`
+        });
+    } else {
+        copyResults();
+    }
+}
+
+function retakeQuiz() {
+    currentQuestion = 0;
+    answers = new Array(questions.length).fill(null);
+    leadData = {};
+    document.getElementById('resultsScreen').classList.remove('active');
+    document.getElementById('leadScreen').classList.remove('active');
+    document.getElementById('landing').classList.remove('hidden');
+    // Reset form fields
+    document.getElementById('leadForm').reset();
+    document.querySelectorAll('.lead-form input').forEach(i => i.classList.remove('invalid'));
+    document.querySelectorAll('.form-error').forEach(e => e.classList.remove('visible'));
+    window.scrollTo(0, 0);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    const quizActive = document.getElementById('quizScreen').classList.contains('active');
+    if (!quizActive) return;
+
+    if (e.key >= '1' && e.key <= '4') {
+        selectOption(parseInt(e.key) - 1);
+    } else if (e.key.toLowerCase() >= 'a' && e.key.toLowerCase() <= 'd') {
+        selectOption(e.key.toLowerCase().charCodeAt(0) - 97);
+    } else if (e.key === 'ArrowLeft') {
+        prevQuestion();
+    }
+});
+</script>
+</body>
+</html>
