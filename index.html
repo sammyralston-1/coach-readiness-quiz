@@ -230,9 +230,11 @@
             width: 100%;
         }
 
-        .option:hover {
-            border-color: #4CAF50;
-            background: rgba(76, 175, 80, 0.06);
+        @media (hover: hover) {
+            .option:hover {
+                border-color: #4CAF50;
+                background: rgba(76, 175, 80, 0.06);
+            }
         }
 
         .option.selected {
@@ -554,7 +556,7 @@
 
         .results-cta p {
             color: #bbb;
-            margin-bottom: 12px;
+            margin-bottom: 18px;
             font-size: 1.05rem;
             line-height: 1.65;
         }
@@ -592,6 +594,7 @@
             background: linear-gradient(135deg, #4CAF50, #388E3C);
             color: #fff;
             border: none;
+            margin-top: 12px;
             padding: 16px 40px;
             font-size: 1.05rem;
             font-weight: 700;
@@ -926,7 +929,9 @@
 
     </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <div style="text-align:center;padding:16px;opacity:0.25;"><a href="crm-dashboard.html" style="color:#888;font-size:0.7rem;text-decoration:none;">Admin Dashboard</a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <!-- HubSpot Tracking Code -->
 <script type="text/javascript" id="hs-script-loader" async defer
@@ -939,7 +944,7 @@
 // ═══════════════════════════════════════════
 function sendToHubSpot(leadInfo, scores, gatingIssues) {
     var portalId = '148065158';
-    var formGuid = '620f4f60-79ba-4fbd-8915-bf3ce8e44d06';
+    var formGuid = 'af88671c-0fdc-4cd7-b2a0-601270d9fdf1';
 
     // Determine readiness level
     var readinessLevel;
@@ -970,7 +975,13 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
             { name: 'email', value: leadInfo.email },
             { name: 'phone', value: leadInfo.phone },
             { name: 'quiz_score', value: String(scores.overall) },
-            { name: 'readiness_level', value: readinessLevel }
+            { name: 'readiness_level', value: readinessLevel },
+            { name: 'experience_score', value: String(scores.experience) },
+            { name: 'business_score', value: String(scores.business) },
+            { name: 'content_score', value: String(scores.content) },
+            { name: 'digital_score', value: String(scores.digital) },
+            { name: 'qualified', value: gatingIssues.length === 0 ? 'Yes' : 'No' },
+            { name: 'gating_feedback', value: gatingIssues.map(function(g) { return g.text; }).join(' | ') || 'None' }
         ],
         context: {
             pageUri: window.location.href,
@@ -999,6 +1010,48 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
     .catch(function(error) {
         console.error('HubSpot: network error', error);
     });
+}
+
+// ═══════════════════════════════════════════
+//  LOCAL CRM STORAGE
+// ═══════════════════════════════════════════
+function saveLeadToCRM(leadInfo, scores, gatingIssues) {
+    var readinessLevel;
+    if (gatingIssues.length > 0) {
+        readinessLevel = 'Not Ready';
+    } else if (scores.overall >= 75) {
+        readinessLevel = 'Launch Ready';
+    } else if (scores.overall >= 55) {
+        readinessLevel = 'Ready';
+    } else {
+        readinessLevel = 'Getting There';
+    }
+
+    var qualified = gatingIssues.length === 0;
+
+    var lead = {
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        firstName: leadInfo.firstName,
+        lastName: leadInfo.lastName,
+        email: leadInfo.email,
+        phone: leadInfo.phone || '',
+        score: scores.overall,
+        readinessLevel: readinessLevel,
+        qualified: qualified,
+        scores: {
+            experience: scores.experience,
+            business: scores.business,
+            content: scores.content,
+            digital: scores.digital
+        },
+        gatingIssues: gatingIssues.map(function(g) { return g.text; }),
+        date: new Date().toISOString(),
+        notes: ''
+    };
+
+    var leads = JSON.parse(localStorage.getItem('crm_leads') || '[]');
+    leads.unshift(lead);
+    localStorage.setItem('crm_leads', JSON.stringify(leads));
 }
 
 // ═══════════════════════════════════════════
@@ -1032,7 +1085,7 @@ const questions = [
         question: "Is tennis coaching your full-time job?",
         options: [
             { text: "No, it's just a hobby or side thing", score: 1, gate: "fulltime" },
-            { text: "Part-time  - I coach a few hours a week", score: 2, gate: "fulltime" },
+            { text: "Part-time  - I coach a few hours a week", score: 2 },
             { text: "It's my main income but I have another small side gig", score: 3 },
             { text: "100% full-time  - this is what I do", score: 4 }
         ],
@@ -1169,6 +1222,9 @@ function selectOption(index) {
 
     document.getElementById('btnNext').disabled = false;
 
+    // Remove focus from the tapped button to prevent ghost highlight on next question
+    if (document.activeElement) document.activeElement.blur();
+
     // Auto-advance after a short delay
     setTimeout(() => {
         nextQuestion();
@@ -1281,7 +1337,7 @@ function checkGatingCriteria() {
     }
 
     const ftAnswer = answers[2];
-    if (ftAnswer !== null && ftAnswer < 2) {
+    if (ftAnswer !== null && ftAnswer < 1) {
         issues.push({
             icon: '⚡',
             text: 'You need to be coaching as your main focus  - at least as your primary income. Build coaching into a serious career before expanding online.'
@@ -1311,6 +1367,9 @@ function showResults() {
 
     // ── SEND TO HUBSPOT ──
     sendToHubSpot(leadData, scores, gatingIssues);
+
+    // ── SAVE TO LOCAL CRM ──
+    saveLeadToCRM(leadData, scores, gatingIssues);
 
     renderResultBadge(scores, gatingIssues);
     renderGatingWarnings(gatingIssues);
@@ -1491,17 +1550,33 @@ function renderCTA(scores, gatingIssues) {
             <p>Focus on the action plan above, build your coaching foundation, and you'll be in a great position to take things online in the future.</p>
         `;
     } else {
+        // Find weakest and strongest dimensions
+        const dimLabels = {
+            experience: 'Coaching Experience',
+            business: 'Business Skills',
+            content: 'Content & Communication',
+            digital: 'Digital Skills'
+        };
+        const dims = Object.entries(scores)
+            .filter(([k]) => k !== 'overall')
+            .sort((a, b) => a[1] - b[1]);
+        const weakest = dims[0];
+        const strongest = dims[dims.length - 1];
+        const firstName = leadData.firstName || 'Coach';
+
+        let gapLine = '';
+        if (weakest[1] < strongest[1]) {
+            gapLine = `Your <strong style="color:#fff">${dimLabels[weakest[0]]}</strong> score (${weakest[1]}%) is the one area holding you back. That's exactly where most coaches get stuck, and exactly what the 28-Day Challenge is built to fix.`;
+        } else {
+            gapLine = `Your scores are strong across the board. The 28-Day Challenge is built to turn that foundation into real paying clients.`;
+        }
+
         cta.innerHTML = `
-            <h3>Ready to Start Earning Online?</h3>
-            <p>I'm running a free 28-day challenge where I personally help <strong style="color:#fff">3 full-time tennis coaches</strong> get set up online and land their first online clients.</p>
-            <ul class="cta-details">
-                <li><span>🛠️</span> Get your online coaching tools fully set up</li>
-                <li><span>🎯</span> Build your offer and online presence from scratch</li>
-                <li><span>💰</span> Land your first paying online clients in 28 days</li>
-                <li><span>🤝</span> 1-on-1 support and accountability throughout</li>
-            </ul>
-            <p>Spots are limited to just 3 coaches  - book your application call to see if you're a fit.</p>
-            <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Book Your Challenge Application Call →</a>
+            <h3>${firstName}, here's what I'd do next if I were you.</h3>
+            <p>${gapLine}</p>
+            <p>The 28-Day Online Tennis Coaching Challenge is my free programme helping tennis coaches learn how to coach remotely and land their first online client in 28 days. I only take 3 coaches per cohort, so there's a short application call first to make sure it's a fit.</p>
+            <p>If you're ready to take action, apply below and pick a time that works for you.</p>
+            <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Apply for the 28-Day Challenge →</a>
         `;
     }
 }
@@ -1510,6 +1585,10 @@ function renderCTA(scores, gatingIssues) {
 //  PDF DOWNLOAD
 // ═══════════════════════════════════════════
 function downloadPDF() {
+    if (!window.jspdf) {
+        alert('PDF generator is still loading. Please try again in a moment.');
+        return;
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     const w = doc.internal.pageSize.getWidth();
