@@ -1560,22 +1560,13 @@ function renderCTA(scores, gatingIssues) {
         const dims = Object.entries(scores)
             .filter(([k]) => k !== 'overall')
             .sort((a, b) => a[1] - b[1]);
-        const weakest = dims[0];
-        const strongest = dims[dims.length - 1];
         const firstName = leadData.firstName || 'Coach';
-
-        let gapLine = '';
-        if (weakest[1] < strongest[1]) {
-            gapLine = `Your <strong style="color:#fff">${dimLabels[weakest[0]]}</strong> score (${weakest[1]}%) is the one area holding you back. That's exactly where most coaches get stuck, and exactly what the 28-Day Challenge is built to fix.`;
-        } else {
-            gapLine = `Your scores are strong across the board. The 28-Day Challenge is built to turn that foundation into real paying clients.`;
-        }
 
         cta.innerHTML = `
             <h3>${firstName}, here's what I'd do next if I were you.</h3>
-            <p>${gapLine}</p>
-            <p>The 28-Day Online Tennis Coaching Challenge is my free programme helping tennis coaches learn how to coach remotely and land their first online client in 28 days. I only take 3 coaches per cohort, so there's a short application call first to make sure it's a fit.</p>
-            <p>If you're ready to take action, apply below and pick a time that works for you.</p>
+            <p>Your scores tell me everything I need to know. You've got the foundation. What you're missing is the path.</p>
+            <p>That's what the 28-Day Online Tennis Coaching Challenge is for. It's my free programme that takes tennis coaches with exactly your profile and walks them through landing their first online client in 28 days. Think of this quiz as step one. The call below is step two.</p>
+            <p>I only run it with 3 coaches at a time, so the call is where we figure out if you're one of them.</p>
             <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Apply for the 28-Day Challenge →</a>
         `;
     }
