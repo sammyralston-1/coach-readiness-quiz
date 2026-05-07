@@ -1188,6 +1188,32 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
         data.context.hutk = hutk;
     }
 
+    // Also push the same properties via the HubSpot tracking code's identify call.
+    // This is a separate API path from the Forms submit endpoint and reliably
+    // populates contact properties that the Forms API silently drops (e.g. new
+    // properties not registered on the form's field schema).
+    try {
+        window._hsq = window._hsq || [];
+        window._hsq.push(['identify', {
+            email: leadInfo.email,
+            firstname: leadInfo.firstName,
+            lastname: leadInfo.lastName,
+            phone: leadInfo.phone,
+            quiz_score: String(scores.overall),
+            readiness_level: readinessLevel,
+            experience_score: String(scores.experience),
+            business_score: String(scores.business),
+            content_score: String(scores.content),
+            digital_score: String(scores.digital),
+            qualified: gatingIssues.length === 0 ? 'Yes' : 'No',
+            gating_feedback: gatingIssues.map(function(g) { return g.text; }).join(' | ') || 'None',
+            financial_readiness: financialAnswer
+        }]);
+        window._hsq.push(['trackPageView']);
+    } catch (e) {
+        console.warn('HubSpot identify failed', e);
+    }
+
     fetch('https://api-eu1.hsforms.com/submissions/v3/integration/submit/' + portalId + '/' + formGuid, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
