@@ -656,6 +656,192 @@
             border-color: #444;
         }
 
+        /* ── Hero CTA (qualified only) ── */
+        .cta-hero {
+            position: relative;
+            margin: 32px 0;
+            padding: 40px 32px 36px;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(76, 175, 80, 0.25), transparent 55%),
+                radial-gradient(circle at 80% 100%, rgba(255, 193, 7, 0.18), transparent 55%),
+                linear-gradient(135deg, #0f1a10, #14110a);
+            border: 1px solid rgba(76, 175, 80, 0.45);
+            box-shadow:
+                0 0 0 1px rgba(76, 175, 80, 0.08),
+                0 8px 36px rgba(76, 175, 80, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            text-align: center;
+            animation: heroGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            from { box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.08), 0 8px 36px rgba(76, 175, 80, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+            to   { box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.18), 0 12px 56px rgba(76, 175, 80, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+        }
+
+        .cta-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 60%;
+            background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.04) 50%, transparent 70%);
+            transform: rotate(-15deg);
+            animation: heroShimmer 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes heroShimmer {
+            0%, 100% { transform: rotate(-15deg) translateX(-30%); opacity: 0; }
+            50%      { transform: rotate(-15deg) translateX(30%);  opacity: 1; }
+        }
+
+        .cta-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #FFD54F, #FFA726);
+            color: #1a1a1a;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 16px rgba(255, 193, 7, 0.4);
+            animation: badgePulse 2.4s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1);    box-shadow: 0 4px 16px rgba(255, 193, 7, 0.4); }
+            50%      { transform: scale(1.05); box-shadow: 0 6px 26px rgba(255, 193, 7, 0.65); }
+        }
+
+        .cta-hero h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-hero .cta-hero-sub {
+            font-size: 1.05rem;
+            color: #cfcfcf;
+            line-height: 1.6;
+            margin: 0 auto 24px;
+            max-width: 480px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-hero-perks {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            margin: 0 auto 28px;
+            text-align: left;
+            padding: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-hero-perks li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: #e8e8e8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .cta-hero-perks li .check {
+            color: #4CAF50;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 1.1rem;
+        }
+
+        .btn-hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: #fff;
+            border: none;
+            padding: 18px 44px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 60px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow:
+                0 6px 28px rgba(76, 175, 80, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            position: relative;
+            z-index: 2;
+            animation: heroBtnPulse 2.4s ease-in-out infinite;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        @keyframes heroBtnPulse {
+            0%, 100% { box-shadow: 0 6px 28px rgba(76, 175, 80, 0.5),  inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+            50%      { box-shadow: 0 10px 44px rgba(76, 175, 80, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+        }
+
+        .btn-hero-cta:hover {
+            transform: translateY(-3px) scale(1.025);
+            animation: none;
+            box-shadow: 0 14px 48px rgba(76, 175, 80, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .cta-hero-scarcity {
+            margin-top: 18px;
+            color: #FFD54F;
+            font-size: 0.88rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .cta-hero-scarcity .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FFD54F;
+            box-shadow: 0 0 10px rgba(255, 213, 79, 0.8);
+            animation: scarcityDot 1.6s ease-in-out infinite;
+        }
+
+        @keyframes scarcityDot {
+            0%, 100% { opacity: 0.4; transform: scale(0.85); }
+            50%      { opacity: 1;   transform: scale(1.15); }
+        }
+
+        @media (max-width: 500px) {
+            .cta-hero { padding: 32px 22px 28px; }
+            .cta-hero h2 { font-size: 1.55rem; }
+            .cta-hero .cta-hero-sub { font-size: 0.98rem; }
+            .btn-hero-cta { padding: 16px 32px; font-size: 1rem; width: 100%; justify-content: center; }
+        }
+
         /* ── Animations ── */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -914,6 +1100,8 @@
                     <span>Launch Now</span>
                 </div>
             </div>
+
+            <div id="ctaHero"></div>
 
             <div id="gatingArea"></div>
             <div class="breakdown" id="breakdown"></div>
@@ -1391,6 +1579,7 @@ function showResults() {
     saveLeadToCRM(leadData, scores, gatingIssues);
 
     renderResultBadge(scores, gatingIssues);
+    renderCtaHero(scores, gatingIssues);
     renderGatingWarnings(gatingIssues);
     renderBreakdown(scores);
     renderRecommendations(scores, gatingIssues);
@@ -1560,34 +1749,49 @@ function renderRecommendations(scores, gatingIssues) {
     document.getElementById('recommendations').innerHTML = `<h3>Your Action Plan</h3>${html}`;
 }
 
+function renderCtaHero(scores, gatingIssues) {
+    const hero = document.getElementById('ctaHero');
+
+    // Only show the hero CTA for qualified prospects
+    if (gatingIssues.length > 0) {
+        hero.innerHTML = '';
+        hero.style.display = 'none';
+        return;
+    }
+    hero.style.display = 'block';
+
+    const firstName = leadData.firstName || 'Coach';
+
+    hero.innerHTML = `
+        <div class="cta-hero">
+            <div class="cta-hero-badge">🏆 You Qualified</div>
+            <h2>${firstName}, you're in. Now book step 2.</h2>
+            <p class="cta-hero-sub">At ${scores.overall}%, you've got the foundation. The 28-Day Online Tennis Coaching Challenge is my free programme that takes coaches with your profile and helps them land their first online client in 28 days.</p>
+            <ul class="cta-hero-perks">
+                <li><span class="check">✓</span><span>Direct mentoring from me  - not a recorded course</span></li>
+                <li><span class="check">✓</span><span>A step-by-step plan to your first paying online client</span></li>
+                <li><span class="check">✓</span><span>Built around the strengths we found in your quiz</span></li>
+                <li><span class="check">✓</span><span>100% free  - no upsell at the end</span></li>
+            </ul>
+            <a class="btn-hero-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Book Your Application Call →</a>
+            <div class="cta-hero-scarcity"><span class="dot"></span> Only 3 coaches accepted at a time</div>
+        </div>
+    `;
+}
+
 function renderCTA(scores, gatingIssues) {
     const cta = document.getElementById('resultsCta');
 
     if (gatingIssues.length > 0) {
+        cta.style.display = 'block';
         cta.innerHTML = `
             <h3>Not ready yet? That's completely fine.</h3>
             <p>Focus on the action plan above, build your coaching foundation, and you'll be in a great position to take things online in the future.</p>
         `;
     } else {
-        // Find weakest and strongest dimensions
-        const dimLabels = {
-            experience: 'Coaching Experience',
-            business: 'Business Skills',
-            content: 'Content & Communication',
-            digital: 'Digital Skills'
-        };
-        const dims = Object.entries(scores)
-            .filter(([k]) => k !== 'overall')
-            .sort((a, b) => a[1] - b[1]);
-        const firstName = leadData.firstName || 'Coach';
-
-        cta.innerHTML = `
-            <h3>${firstName}, here's what I'd do next if I were you.</h3>
-            <p>Your scores tell me everything I need to know. You've got the foundation. What you're missing is the path.</p>
-            <p>That's what the 28-Day Online Tennis Coaching Challenge is for. It's my free programme that takes tennis coaches with exactly your profile and walks them through landing their first online client in 28 days. Think of this quiz as step one. The call below is step two.</p>
-            <p>I only run it with 3 coaches at a time, so the call is where we figure out if you're one of them.</p>
-            <a class="btn-cta" href="https://calendly.com/contact-firstlaunch/application-call" target="_blank" rel="noopener">Apply for the 28-Day Challenge →</a>
-        `;
+        // Qualified users see the hero CTA at the top, so hide the bottom CTA
+        cta.style.display = 'none';
+        cta.innerHTML = '';
     }
 }
 
