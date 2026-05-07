@@ -968,6 +968,11 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
         }
     }
 
+    // Capture the financial readiness answer text for HubSpot
+    var financialAnswer = answers[8] !== null && answers[8] !== undefined
+        ? questions[8].options[answers[8]].text
+        : '';
+
     var data = {
         fields: [
             { name: 'firstname', value: leadInfo.firstName },
@@ -981,7 +986,8 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
             { name: 'content_score', value: String(scores.content) },
             { name: 'digital_score', value: String(scores.digital) },
             { name: 'qualified', value: gatingIssues.length === 0 ? 'Yes' : 'No' },
-            { name: 'gating_feedback', value: gatingIssues.map(function(g) { return g.text; }).join(' | ') || 'None' }
+            { name: 'gating_feedback', value: gatingIssues.map(function(g) { return g.text; }).join(' | ') || 'None' },
+            { name: 'financial_readiness', value: financialAnswer }
         ],
         context: {
             pageUri: window.location.href,
@@ -1029,6 +1035,10 @@ function saveLeadToCRM(leadInfo, scores, gatingIssues) {
 
     var qualified = gatingIssues.length === 0;
 
+    var financialAnswer = answers[8] !== null && answers[8] !== undefined
+        ? questions[8].options[answers[8]].text
+        : '';
+
     var lead = {
         id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
         firstName: leadInfo.firstName,
@@ -1044,6 +1054,7 @@ function saveLeadToCRM(leadInfo, scores, gatingIssues) {
             content: scores.content,
             digital: scores.digital
         },
+        financialReadiness: financialAnswer,
         gatingIssues: gatingIssues.map(function(g) { return g.text; }),
         date: new Date().toISOString(),
         notes: ''
@@ -1147,13 +1158,13 @@ const questions = [
         dimension: "digital"
     },
     {
-        category: "Business Mindset",
-        question: "How do you feel about selling your coaching services online?",
+        category: "Financial Readiness",
+        question: "Are you in a financial position where you could invest in your online coaching business right now if it made sense?",
         options: [
-            { text: "It feels uncomfortable  - I don't want to 'sell' myself", score: 1 },
-            { text: "I'm open to it but I wouldn't know where to start", score: 2 },
-            { text: "I've started thinking about pricing and offers", score: 3 },
-            { text: "I already know my value and I'm confident charging for my expertise", score: 4 }
+            { text: "Honestly not sure", score: 1, gate: "financial" },
+            { text: "Not right now  - I'd need to save up first", score: 2, gate: "financial" },
+            { text: "Yes, but it would be a stretch", score: 3 },
+            { text: "Yes, I've got savings set aside for this", score: 4 }
         ],
         dimension: "business"
     },
@@ -1341,6 +1352,14 @@ function checkGatingCriteria() {
         issues.push({
             icon: '⚡',
             text: 'You need to be coaching as your main focus  - at least as your primary income. Build coaching into a serious career before expanding online.'
+        });
+    }
+
+    const finAnswer = answers[8];
+    if (finAnswer !== null && finAnswer < 2) {
+        issues.push({
+            icon: '💰',
+            text: 'You need to be in a financial position where you could invest in your online coaching business when the moment calls for it. Build up some savings first so you can put money behind growth when you need to.'
         });
     }
 
