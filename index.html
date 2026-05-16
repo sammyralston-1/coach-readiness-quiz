@@ -1306,13 +1306,13 @@ const questions = [
         dimension: "experience"
     },
     {
-        category: "Coaching Commitment",
-        question: "Is tennis coaching your full-time job?",
+        category: "Motivation",
+        question: "What's the main reason you want to coach online?",
         options: [
-            { text: "No, it's just a hobby or side thing", score: 1, gate: "fulltime" },
-            { text: "Part-time  - I coach a few hours a week", score: 2 },
-            { text: "It's my main income but I have another small side gig", score: 3 },
-            { text: "100% full-time  - this is what I do", score: 4 }
+            { text: "I'm just curious about it", score: 1, gate: "motivation" },
+            { text: "I'd like more income eventually", score: 2, gate: "motivation" },
+            { text: "I have a specific income gap I need to fill", score: 3 },
+            { text: "My current coaching situation isn't sustainable for me long-term", score: 4 }
         ],
         dimension: "business"
     },
@@ -1361,13 +1361,13 @@ const questions = [
         dimension: "digital"
     },
     {
-        category: "Online Presence",
-        question: "Do you currently have an online presence for your coaching?",
+        category: "Readiness Timeline",
+        question: "When do you want to land your first online client?",
         options: [
-            { text: "Nothing  - I don't have any social media or website for coaching", score: 1 },
-            { text: "I have a personal social media account where I sometimes post about tennis", score: 2 },
-            { text: "I have a dedicated coaching profile/page with a small following", score: 3 },
-            { text: "I have an established brand  - website, social media, and engaged followers", score: 4 }
+            { text: "I'm just exploring for now, no rush", score: 1, gate: "timeline" },
+            { text: "Sometime in the next 6-12 months", score: 2, gate: "timeline" },
+            { text: "Within the next 3 months", score: 3 },
+            { text: "As soon as possible  - this month if I can", score: 4 }
         ],
         dimension: "digital"
     },
@@ -1561,11 +1561,19 @@ function checkGatingCriteria() {
         });
     }
 
-    const ftAnswer = answers[2];
-    if (ftAnswer !== null && ftAnswer < 1) {
+    const motivationAnswer = answers[2];
+    if (motivationAnswer !== null && motivationAnswer < 2) {
         issues.push({
-            icon: '⚡',
-            text: 'You need to be coaching as your main focus  - at least as your primary income. Build coaching into a serious career before expanding online.'
+            icon: '🎯',
+            text: 'You need a clear reason driving you to take coaching online  - whether that\'s filling a real income gap or building a more sustainable coaching career. Without a strong reason, the work involved tends to fizzle out before it pays off.'
+        });
+    }
+
+    const timelineAnswer = answers[7];
+    if (timelineAnswer !== null && timelineAnswer < 2) {
+        issues.push({
+            icon: '📆',
+            text: 'You need a real timeline for landing your first online client. Without the intention to act inside the next 3 months, online coaching tends to stay on the back burner indefinitely.'
         });
     }
 
