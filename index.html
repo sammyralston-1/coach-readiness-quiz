@@ -1156,10 +1156,15 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
         }
     }
 
-    // Capture the financial readiness answer text for HubSpot
-    var financialAnswer = answers[8] !== null && answers[8] !== undefined
-        ? questions[8].options[answers[8]].text
-        : '';
+    // Capture the BANT answer texts for HubSpot
+    function answerTextAt(idx) {
+        return answers[idx] !== null && answers[idx] !== undefined
+            ? questions[idx].options[answers[idx]].text
+            : '';
+    }
+    var motivationAnswer = answerTextAt(2);
+    var timelineAnswer = answerTextAt(7);
+    var financialAnswer = answerTextAt(8);
 
     var data = {
         fields: [
@@ -1168,13 +1173,10 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
             { name: 'email', value: leadInfo.email },
             { name: 'phone', value: leadInfo.phone },
             { name: 'quiz_score', value: String(scores.overall) },
-            { name: 'readiness_level', value: readinessLevel },
-            { name: 'experience_score', value: String(scores.experience) },
-            { name: 'business_score', value: String(scores.business) },
-            { name: 'content_score', value: String(scores.content) },
-            { name: 'digital_score', value: String(scores.digital) },
             { name: 'qualified', value: gatingIssues.length === 0 ? 'Yes' : 'No' },
             { name: 'gating_feedback', value: gatingIssues.map(function(g) { return g.text; }).join(' | ') || 'None' },
+            { name: 'motivation', value: motivationAnswer },
+            { name: 'readiness_timeline', value: timelineAnswer },
             { name: 'financial_readiness', value: financialAnswer }
         ],
         context: {
@@ -1200,13 +1202,10 @@ function sendToHubSpot(leadInfo, scores, gatingIssues) {
             lastname: leadInfo.lastName,
             phone: leadInfo.phone,
             quiz_score: String(scores.overall),
-            readiness_level: readinessLevel,
-            experience_score: String(scores.experience),
-            business_score: String(scores.business),
-            content_score: String(scores.content),
-            digital_score: String(scores.digital),
             qualified: gatingIssues.length === 0 ? 'Yes' : 'No',
             gating_feedback: gatingIssues.map(function(g) { return g.text; }).join(' | ') || 'None',
+            motivation: motivationAnswer,
+            readiness_timeline: timelineAnswer,
             financial_readiness: financialAnswer
         }]);
         window._hsq.push(['trackPageView']);
@@ -1249,9 +1248,14 @@ function saveLeadToCRM(leadInfo, scores, gatingIssues) {
 
     var qualified = gatingIssues.length === 0;
 
-    var financialAnswer = answers[8] !== null && answers[8] !== undefined
-        ? questions[8].options[answers[8]].text
-        : '';
+    function answerTextAt(idx) {
+        return answers[idx] !== null && answers[idx] !== undefined
+            ? questions[idx].options[answers[idx]].text
+            : '';
+    }
+    var motivationAnswer = answerTextAt(2);
+    var timelineAnswer = answerTextAt(7);
+    var financialAnswer = answerTextAt(8);
 
     var lead = {
         id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
@@ -1268,6 +1272,8 @@ function saveLeadToCRM(leadInfo, scores, gatingIssues) {
             content: scores.content,
             digital: scores.digital
         },
+        motivation: motivationAnswer,
+        readinessTimeline: timelineAnswer,
         financialReadiness: financialAnswer,
         gatingIssues: gatingIssues.map(function(g) { return g.text; }),
         date: new Date().toISOString(),
